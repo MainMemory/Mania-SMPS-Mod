@@ -1,0 +1,6 @@
+[submodule "mod-loader-common"]
+	path = mod-loader-common
+	url = https://github.com/sonicretro/mod-loader-common
+[submodule "mania-mod-loader"]
+	path = mania-mod-loader
+	url = https://github.com/sonicretro/mania-mod-loader
