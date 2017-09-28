@@ -375,10 +375,7 @@ extern "C"
 			if (found != songmap.end())
 				MusicChoices[key] = found->second;
 			else
-			{
-				MusicChoices[key] = -1;
 				PrintDebug("SMPS Mod: %s is not a valid option in key %s.\n", value.c_str(), key.c_str());
-			}
 		}
 		delete cfg;
 		WriteJump((void*)0x5993A0, PlayMusicFile_r);
