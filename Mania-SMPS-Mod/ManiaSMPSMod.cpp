@@ -276,6 +276,7 @@ const string SMPSMusicList[] = {
 unordered_map<string, short> songmap;
 
 DataPointer(MusicInfo *, MusicSlots, 0xD84664);
+DataPointer(float, MusicVolume, 0x639CC4);
 int oldsong = -1;
 char oldstatus = 0;
 void SongStoppedCallback()
@@ -313,7 +314,7 @@ extern "C"
 #endif
 				}
 			oldstatus = status;
-			SetVolume(stru_D7ACA0[song].volume * 0.5);
+			SetVolume(stru_D7ACA0[song].volume * 0.5 * MusicVolume);
 			if (bluespheretime != -1 && bluespheretime < 7200 && status == 2 && ++bluespheretime % 1800 == 0)
 				SetSongTempo(100 - (8 * bluespheretime / 1800));
 		}
@@ -349,7 +350,7 @@ extern "C"
 		InitializeDriver();
 		SetCurrentDirectoryA(olddir);
 		RegisterSongStoppedCallback(SongStoppedCallback);
-		SetVolume(0.5);
+		SetVolume(0.5 * MusicVolume);
 		size_t sng;
 		for (sng = 0; sng < LengthOfArray(SMPSMusicList); sng++)
 			songmap[SMPSMusicList[sng]] = (short)sng;
