@@ -343,7 +343,11 @@ extern "C"
 		GetFunc(PauseSong);
 		GetFunc(ResumeSong);
 		GetFunc(SetSongTempo);
+		char olddir[MAX_PATH];
+		GetCurrentDirectoryA(MAX_PATH, olddir);
+		SetCurrentDirectoryA(path);
 		InitializeDriver();
+		SetCurrentDirectoryA(olddir);
 		RegisterSongStoppedCallback(SongStoppedCallback);
 		SetVolume(0.5);
 		size_t sng;
