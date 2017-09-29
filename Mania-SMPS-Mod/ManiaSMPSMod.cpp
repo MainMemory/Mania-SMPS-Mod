@@ -351,17 +351,25 @@ extern "C"
 			PrintDebug("Mania-SMPS-Mod: Could not load SMPSOUT.dll!\n");
 			return;
 		}
-		((BOOL(*)())GetProcAddress(handle, "InitializeDriver"))();
-		((void(*)(void(*callback)()))GetProcAddress(handle, "RegisterSongStoppedCallback"))(SongStoppedCallback);
+		BOOL(*InitializeDriver)() = GetFunc(InitializeDriver);
+		void(*RegisterSongStoppedCallback)(void(*callback)) = GetFunc(RegisterSongStoppedCallback);
+		const char **(*GetCustomSongs)(unsigned int &count) = GetFunc(GetCustomSongs);
 		GetFunc(SetVolume);
 		GetFunc(PlaySong);
 		GetFunc(StopSong);
 		GetFunc(PauseSong);
 		GetFunc(ResumeSong);
 		GetFunc(SetSongTempo);
+		InitializeDriver();
+		RegisterSongStoppedCallback(SongStoppedCallback);
 		SetVolume(0.5);
-		for (size_t i = 0; i < LengthOfArray(SMPSMusicList); i++)
-			songmap[SMPSMusicList[i]] = (short)i;
+		size_t sng;
+		for (sng = 0; sng < LengthOfArray(SMPSMusicList); sng++)
+			songmap[SMPSMusicList[sng]] = (short)sng;
+		unsigned int custcnt;
+		const char **cust = GetCustomSongs(custcnt);
+		for (unsigned int i = 0; i < custcnt; i++)
+			songmap[cust[i]] = (short)(i + sng);
 		strcpy_s(pathbuf, path);
 		strcat_s(pathbuf, "\\config.ini");
 		const IniFile *cfg = new IniFile(pathbuf);
