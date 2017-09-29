@@ -103,7 +103,7 @@ int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart,
 			bluespheretime = -1;
 		return a2;
 	}
-	else if (!_stricmp(name, "speedshoes.ogg"))
+	else if (!_stricmp(name, "sneakers.ogg"))
 	{
 		SetSongTempo(66);
 		shoes = true;
