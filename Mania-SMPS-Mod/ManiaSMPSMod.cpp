@@ -393,6 +393,7 @@ extern "C"
 		WriteCall((void*)0x5CAEDB, ResumeSound);
 		WriteCall((void*)0x5CAF85, PauseSound);
 		WriteCall((void*)0x5CAFA6, ResumeSound);
+		WriteData((char*)0x5C96CF, (char)0xEB);
 	}
 
 	__declspec(dllexport) ModInfo ManiaModInfo = { ModLoaderVer, GameVer };
