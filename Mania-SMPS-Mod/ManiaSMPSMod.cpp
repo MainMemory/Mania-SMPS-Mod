@@ -50,10 +50,8 @@ struct MusicInfo
 
 unordered_map<string, short> MusicChoices;
 
-bool shoes;
 bool one_up;
 int bluespheretime = -1;
-string lastname;
 
 DataArray(struct_0, stru_D7ACA0, 0xD7ACA0, 16);
 int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart, int a5)
@@ -63,20 +61,8 @@ int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart,
 #endif
 	if (stru_D7ACA0[a2].playStatus == 3)
 		return -1;
-	string namestr = name;
-	if (one_up && name == lastname)
-	{
-		one_up = false;
-		return a2;
-	}
-	if (shoes && name == lastname)
-	{
-		SetSongTempo(100);
-		shoes = false;
-		return a2;
-	}
-	auto choice = MusicChoices.find(namestr);
-	if (choice != MusicChoices.end())
+	auto choice = MusicChoices.find(name);
+	if (choice != MusicChoices.cend())
 	{
 		stru_D7ACA0[a2].anonymous_0 = *(int*)0xD7CEF0;
 		stru_D7ACA0[a2].anonymous_4 = *(int*)0xD7CEF4;
@@ -87,30 +73,26 @@ int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart,
 		stru_D7ACA0[a2].anonymous_1 = 0;
 		stru_D7ACA0[a2].anonymous_3 = 0x10000;
 		PlaySong(choice->second);
-		if (shoes)
-			SetSongTempo(66);
 		stru_D7ACA0[a2].playStatus = 2;
-		if (!_stricmp(name, "1up.ogg"))
-			one_up = true;
-		else
-		{
-			lastname = name;
-			one_up = false;
-		}
+		one_up = !_stricmp(name, "1up.ogg");
 		if (!_stricmp(name, "bluespheresspd.ogg"))
 			bluespheretime = 0;
 		else
 			bluespheretime = -1;
 		return a2;
 	}
-	else if (!_stricmp(name, "sneakers.ogg"))
-	{
-		SetSongTempo(66);
-		shoes = true;
-		return a2;
-	}
 	stru_D7ACA0[a2].playStatus = 0;
 	return -1;
+}
+
+void SpeedUpMusic()
+{
+	SetSongTempo(66);
+}
+
+void SlowDownMusic()
+{
+	SetSongTempo(100);
 }
 
 VoidFunc(sub_599720, 0x599720);
@@ -298,8 +280,9 @@ int oldsong = -1;
 char oldstatus = 0;
 void SongStoppedCallback()
 {
-	if (oldsong != -1)
+	if (oldsong != -1 && !one_up)
 		oldstatus = stru_D7ACA0[oldsong].playStatus = 0;
+	one_up = false;
 }
 
 extern "C"
@@ -388,12 +371,20 @@ extern "C"
 		delete cfg;
 		WriteJump((void*)0x5993A0, PlayMusicFile_r);
 		WriteData((char*)0x599780, (char)0xC3);
-		WriteData((char*)0x401683, (char)0xEB);
+		WriteData((char*)0x4016A7, (char)0xEB);
+		WriteData((char*)0x401AD9, (char)0xEB);
+		WriteData((char*)0x401BA0, (char)0xB8);
+		WriteData((int*)0x401BA1, 0);
 		WriteCall((void*)0x5CAE98, PauseSound);
 		WriteCall((void*)0x5CAEDB, ResumeSound);
 		WriteCall((void*)0x5CAF85, PauseSound);
 		WriteCall((void*)0x5CAFA6, ResumeSound);
 		WriteData((char*)0x5C96CF, (char)0xEB);
+		if (MusicChoices.find("Sneakers.ogg") == MusicChoices.cend())
+		{
+			WriteCall((void*)0x43DEB6, SpeedUpMusic);
+			WriteCall((void*)0x47EB06, SlowDownMusic);
+		}
 	}
 
 	__declspec(dllexport) ModInfo ManiaModInfo = { ModLoaderVer, GameVer };
