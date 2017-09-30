@@ -5,6 +5,7 @@
 #include "..\mod-loader-common\ModLoaderCommon\IniFile.hpp"
 #include "..\mania-mod-loader\ManiaModLoader\include\ManiaModLoader.h"
 #include <unordered_map>
+#include <algorithm>
 using std::string;
 using std::unordered_map;
 
@@ -61,7 +62,9 @@ int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart,
 #endif
 	if (stru_D7ACA0[a2].playStatus == 3)
 		return -1;
-	auto choice = MusicChoices.find(name);
+	string namestr = name;
+	std::transform(namestr.begin(), namestr.end(), namestr.begin(), tolower);
+	auto choice = MusicChoices.find(namestr);
 	if (choice != MusicChoices.cend())
 	{
 		stru_D7ACA0[a2].anonymous_0 = *(int*)0xD7CEF0;
@@ -365,6 +368,7 @@ extern "C"
 		for (auto i = grp->cbegin(); i != grp->cend(); ++i)
 		{
 			string key = i->first;
+			std::transform(key.begin(), key.end(), key.begin(), tolower);
 			key.append(".ogg");
 			const string &value = i->second;
 			auto found = songmap.find(value);
@@ -385,7 +389,7 @@ extern "C"
 		WriteCall((void*)0x5CAF85, PauseSound);
 		WriteCall((void*)0x5CAFA6, ResumeSound);
 		WriteData((char*)0x5C96CF, (char)0xEB);
-		if (MusicChoices.find("Sneakers.ogg") == MusicChoices.cend())
+		if (MusicChoices.find("sneakers.ogg") == MusicChoices.cend())
 		{
 			WriteCall((void*)0x43DEB6, SpeedUpMusic);
 			WriteCall((void*)0x47EB06, SlowDownMusic);
