@@ -54,29 +54,29 @@ unordered_map<string, short> MusicChoices;
 bool one_up;
 int bluespheretime = -1;
 
-DataArray(struct_0, stru_D7ACA0, 0xD7ACA0, 16);
+DataArray(struct_0, stru_D79CA0, 0xD79CA0, 16);
 int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart, int a5)
 {
 #ifdef _DEBUG
 	PrintDebug("PlayMusicFile(\"%s\", %d, %d, %d, %d);\n", name, a2, a3, loopstart, a5);
 #endif
-	if (stru_D7ACA0[a2].playStatus == 3)
+	if (stru_D79CA0[a2].playStatus == 3)
 		return -1;
 	string namestr = name;
 	std::transform(namestr.begin(), namestr.end(), namestr.begin(), tolower);
 	auto choice = MusicChoices.find(namestr);
 	if (choice != MusicChoices.cend())
 	{
-		stru_D7ACA0[a2].anonymous_0 = *(int*)0xD7CEF0;
-		stru_D7ACA0[a2].anonymous_4 = *(int*)0xD7CEF4;
-		*(_DWORD *)&stru_D7ACA0[a2].anonymous_8 = 0x3FF00FF;
-		stru_D7ACA0[a2].hasLoop = loopstart > 0;
-		stru_D7ACA0[a2].anonymous_5 = 0;
-		stru_D7ACA0[a2].volume = 1;
-		stru_D7ACA0[a2].anonymous_1 = 0;
-		stru_D7ACA0[a2].anonymous_3 = 0x10000;
+		stru_D79CA0[a2].anonymous_0 = *(int*)0xD7BEF0;
+		stru_D79CA0[a2].anonymous_4 = *(int*)0xD7BEF4;
+		*(_DWORD *)&stru_D79CA0[a2].anonymous_8 = 0x3FF00FF;
+		stru_D79CA0[a2].hasLoop = loopstart > 0;
+		stru_D79CA0[a2].anonymous_5 = 0;
+		stru_D79CA0[a2].volume = 1;
+		stru_D79CA0[a2].anonymous_1 = 0;
+		stru_D79CA0[a2].anonymous_3 = 0x10000;
 		PlaySong(choice->second);
-		stru_D7ACA0[a2].playStatus = 2;
+		stru_D79CA0[a2].playStatus = 2;
 		one_up = !_stricmp(name, "1up.ogg");
 		if (!_stricmp(name, "bluespheresspd.ogg"))
 			bluespheretime = 0;
@@ -84,7 +84,7 @@ int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart,
 			bluespheretime = -1;
 		return a2;
 	}
-	stru_D7ACA0[a2].playStatus = 0;
+	stru_D79CA0[a2].playStatus = 0;
 	return -1;
 }
 
@@ -98,11 +98,11 @@ void SlowDownMusic()
 	SetSongTempo(100);
 }
 
-VoidFunc(sub_599720, 0x599720);
+VoidFunc(sub_5995E0, 0x5995E0);
 void ResumeSound()
 {
 	ResumeSong();
-	sub_599720();
+	sub_5995E0();
 }
 
 VoidFunc(sub_5996C0, 0x5996C0);
@@ -278,14 +278,13 @@ const string SMPSMusicList[] = {
 
 unordered_map<string, short> songmap;
 
-DataPointer(MusicInfo *, MusicSlots, 0xD84664);
-DataPointer(float, MusicVolume, 0x639CC4);
+DataPointer(MusicInfo *, MusicSlots, 0xD83664);
 int oldsong = -1;
 char oldstatus = 0;
 void SongStoppedCallback()
 {
 	if (oldsong != -1 && !one_up)
-		oldstatus = stru_D7ACA0[oldsong].playStatus = 0;
+		oldstatus = stru_D79CA0[oldsong].playStatus = 0;
 	one_up = false;
 }
 
@@ -297,7 +296,7 @@ extern "C"
 		int song = MusicSlots->CurrentSong;
 		if (song != -1)
 		{
-			char status = stru_D7ACA0[song].playStatus;
+			char status = stru_D79CA0[song].playStatus;
 			if (song == oldsong && status != oldstatus)
 				switch (status)
 				{
@@ -317,7 +316,7 @@ extern "C"
 #endif
 				}
 			oldstatus = status;
-			SetVolume(stru_D7ACA0[song].volume * 0.5 * MusicVolume);
+			SetVolume(stru_D79CA0[song].volume * 0.5 * MusicVolume);
 			if (bluespheretime != -1 && bluespheretime < 7200 && status == 2 && ++bluespheretime % 1800 == 0)
 				SetSongTempo(100 - (8 * bluespheretime / 1800));
 		}
@@ -378,21 +377,21 @@ extern "C"
 				PrintDebug("SMPS Mod: %s is not a valid option in key %s.\n", value.c_str(), key.c_str());
 		}
 		delete cfg;
-		WriteJump((void*)0x5993A0, PlayMusicFile_r);
-		WriteData((char*)0x599780, (char)0xC3);
+		WriteJump((void*)0x5992C0, PlayMusicFile_r);
+		WriteData((char*)0x5996A0, (char)0xC3);
 		WriteData((char*)0x4016A7, (char)0xEB);
 		WriteData((char*)0x401AD9, (char)0xEB);
 		WriteData((char*)0x401BA0, (char)0xB8);
 		WriteData((int*)0x401BA1, 0);
-		WriteCall((void*)0x5CAE98, PauseSound);
-		WriteCall((void*)0x5CAEDB, ResumeSound);
-		WriteCall((void*)0x5CAF85, PauseSound);
-		WriteCall((void*)0x5CAFA6, ResumeSound);
-		WriteData((char*)0x5C96CF, (char)0xEB);
+		WriteCall((void*)0x5CADA8, PauseSound);
+		WriteCall((void*)0x5CADEB, ResumeSound);
+		WriteCall((void*)0x5CAE95, PauseSound);
+		WriteCall((void*)0x5CAEB6, ResumeSound);
+		WriteData((char*)0x5C95DF, (char)0xEB);
 		if (MusicChoices.find("sneakers.ogg") == MusicChoices.cend())
 		{
-			WriteCall((void*)0x43DEB6, SpeedUpMusic);
-			WriteCall((void*)0x47EB06, SlowDownMusic);
+			WriteCall((void*)0x43DCE6, SpeedUpMusic);
+			WriteCall((void*)0x47EA16, SlowDownMusic);
 		}
 	}
 

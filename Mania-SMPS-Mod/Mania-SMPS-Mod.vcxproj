@@ -15,7 +15,7 @@
     <ProjectGuid>{574E7CB9-BC82-456B-B1B7-41517B24388B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ManiaSMPSMod</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
