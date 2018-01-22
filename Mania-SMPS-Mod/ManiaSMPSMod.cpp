@@ -98,18 +98,18 @@ void SlowDownMusic()
 	SetSongTempo(100);
 }
 
-VoidFunc(sub_5995E0, 0x5995E0);
+VoidFunc(sub_599640, 0x599640);
 void ResumeSound()
 {
 	ResumeSong();
-	sub_5995E0();
+	sub_599640();
 }
 
-VoidFunc(sub_5996C0, 0x5996C0);
+VoidFunc(sub_5995E0, 0x5995E0);
 void PauseSound()
 {
 	PauseSong();
-	sub_5996C0();
+	sub_5995E0();
 }
 
 const string SMPSMusicList[] = {
