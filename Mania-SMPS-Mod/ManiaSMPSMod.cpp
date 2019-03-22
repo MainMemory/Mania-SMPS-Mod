@@ -54,37 +54,38 @@ unordered_map<string, short> MusicChoices;
 bool one_up;
 int bluespheretime = -1;
 
-DataArray(struct_0, stru_D79CA0, 0xD79CA0, 16);
-int PlayMusicFile_r(char *name, unsigned int a2, int a3, unsigned int loopstart, int a5)
+DataArray(struct_0, stru_26B818, 0x0026B818, 16);
+int PlayMusicFile_r(char *name, unsigned int slot, int a3, unsigned int loopstart, int a5)
 {
 #ifdef _DEBUG
-	PrintDebug("PlayMusicFile(\"%s\", %d, %d, %d, %d);\n", name, a2, a3, loopstart, a5);
+	PrintDebug("PlayMusicFile(\"%s\", %d, %d, %d, %d);\n", name, slot, a3, loopstart, a5);
 #endif
-	if (stru_D79CA0[a2].playStatus == 3)
+	if (stru_26B818[slot].playStatus == 3)
 		return -1;
 	string namestr = name;
 	std::transform(namestr.begin(), namestr.end(), namestr.begin(), tolower);
 	auto choice = MusicChoices.find(namestr);
 	if (choice != MusicChoices.cend())
 	{
-		stru_D79CA0[a2].anonymous_0 = *(int*)0xD7BEF0;
-		stru_D79CA0[a2].anonymous_4 = *(int*)0xD7BEF4;
-		*(_DWORD *)&stru_D79CA0[a2].anonymous_8 = 0x3FF00FF;
-		stru_D79CA0[a2].hasLoop = loopstart > 0;
-		stru_D79CA0[a2].anonymous_5 = 0;
-		stru_D79CA0[a2].volume = 1;
-		stru_D79CA0[a2].anonymous_1 = 0;
-		stru_D79CA0[a2].anonymous_3 = 0x10000;
+		stru_26B818[slot].anonymous_0 = *(int*)(baseAddress + 0x00A5CC88);
+		stru_26B818[slot].anonymous_4 = *(int*)(baseAddress + 0x00A5CC8C);
+		*(_DWORD *)&stru_26B818[slot].anonymous_8 = 0x3FF00FF;
+		stru_26B818[slot].hasLoop = loopstart > 0;
+		stru_26B818[slot].anonymous_5 = 0;
+		stru_26B818[slot].volume = 1;
+		stru_26B818[slot].anonymous_1 = 0;
+		stru_26B818[slot].anonymous_3 = 0x10000;
+
 		PlaySong(choice->second);
-		stru_D79CA0[a2].playStatus = 2;
+		stru_26B818[slot].playStatus = 2;
 		one_up = !_stricmp(name, "1up.ogg");
 		if (!_stricmp(name, "bluespheresspd.ogg"))
 			bluespheretime = 0;
 		else
 			bluespheretime = -1;
-		return a2;
+		return slot;
 	}
-	stru_D79CA0[a2].playStatus = 0;
+	stru_26B818[slot].playStatus = 0;
 	return -1;
 }
 
@@ -98,18 +99,18 @@ void SlowDownMusic()
 	SetSongTempo(100);
 }
 
-VoidFunc(sub_599640, 0x599640);
-void ResumeSound()
+VoidFunc(ResumeSound, 0x001BC9C0);
+void ResumeSound_SMPS()
 {
 	ResumeSong();
-	sub_599640();
+	ResumeSound();
 }
 
-VoidFunc(sub_5995E0, 0x5995E0);
-void PauseSound()
+VoidFunc(PauseSound, 0x001BC960);
+void PauseSound_SMPS()
 {
 	PauseSong();
-	sub_5995E0();
+	PauseSound();
 }
 
 const string SMPSMusicList[] = {
@@ -278,13 +279,13 @@ const string SMPSMusicList[] = {
 
 unordered_map<string, short> songmap;
 
-DataPointer(MusicInfo *, MusicSlots, 0xD83664);
+DataPointer(MusicInfo *, MusicSlots, 0xAC6E08);
 int oldsong = -1;
 char oldstatus = 0;
 void SongStoppedCallback()
 {
 	if (oldsong != -1 && !one_up)
-		oldstatus = stru_D79CA0[oldsong].playStatus = 0;
+		oldstatus = stru_26B818[oldsong].playStatus = 0;
 	one_up = false;
 }
 
@@ -296,7 +297,7 @@ extern "C"
 		int song = MusicSlots->CurrentSong;
 		if (song != -1)
 		{
-			char status = stru_D79CA0[song].playStatus;
+			char status = stru_26B818[song].playStatus;
 			if (song == oldsong && status != oldstatus)
 				switch (status)
 				{
@@ -316,7 +317,7 @@ extern "C"
 #endif
 				}
 			oldstatus = status;
-			SetVolume(stru_D79CA0[song].volume * 0.5 * MusicVolume);
+			SetVolume(stru_26B818[song].volume * 0.5 * MusicVolume);
 			if (bluespheretime != -1 && bluespheretime < 7200 && status == 2 && ++bluespheretime % 1800 == 0)
 				SetSongTempo(100 - (8 * bluespheretime / 1800));
 		}
@@ -377,21 +378,18 @@ extern "C"
 				PrintDebug("SMPS Mod: %s is not a valid option in key %s.\n", value.c_str(), key.c_str());
 		}
 		delete cfg;
-		WriteJump((void*)0x5992C0, PlayMusicFile_r);
-		WriteData((char*)0x5996A0, (char)0xC3);
-		WriteData((char*)0x4016A7, (char)0xEB);
-		WriteData((char*)0x401AD9, (char)0xEB);
-		WriteData((char*)0x401BA0, (char)0xB8);
-		WriteData((int*)0x401BA1, 0);
-		WriteCall((void*)0x5CADA8, PauseSound);
-		WriteCall((void*)0x5CADEB, ResumeSound);
-		WriteCall((void*)0x5CAE95, PauseSound);
-		WriteCall((void*)0x5CAEB6, ResumeSound);
-		WriteData((char*)0x5C95DF, (char)0xEB);
+		WriteJump((void*)(baseAddress + 0x001BC640), PlayMusicFile_r);
+		WriteData((char*)(baseAddress + 0x001BCA20), (char)0xC3);
+		WriteData((char*)(baseAddress + 0x001FD61F), (char)0xEB);
+		WriteData((char*)(baseAddress + 0x001BC5AE), (char)0xEB);
+		WriteJump((void*)(baseAddress + 0x001C8705), PauseSound_SMPS);
+		WriteJump((void*)(baseAddress + 0x001C8727), ResumeSound_SMPS);
+		WriteCall((void*)(baseAddress + 0x001FE743), PauseSound_SMPS);
+		WriteCall((void*)(baseAddress + 0x001FE764), ResumeSound_SMPS);
 		if (MusicChoices.find("sneakers.ogg") == MusicChoices.cend())
 		{
-			WriteCall((void*)0x43DCE6, SpeedUpMusic);
-			WriteCall((void*)0x47EA16, SlowDownMusic);
+			WriteCall((void*)(baseAddress + 0x000A8C08), SpeedUpMusic);
+			WriteCall((void*)(baseAddress + 0x000C27E8), SlowDownMusic);
 		}
 	}
 
